@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { TodoType } from '../types/type'
 import palette from '../../styles/palette'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { checkTodoAPI } from '../../lib/api/todo';
@@ -120,18 +120,15 @@ type ObjectIndexType = {
   [key: string]: number | undefined
 }
 
-const checkTodo = async (id: number) => {
-  try {
-    await checkTodoAPI(id)
-  } catch (e) {
-    console.log(e)
-  }
-}
+
+
+
 
 const TodoList: React.FC<IProps> = ({ todos }) => {
+  const [localTodos, setLocalTodos] = useState(todos);
   const todoColorNums = useMemo(() => {
     const colors: ObjectIndexType = {};
-    todos.forEach(todo => {
+    localTodos.forEach(todo => {
       if (!colors[todo.color]) {
         colors[`${todo.color}`] = 1;
       } else {
@@ -139,12 +136,24 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
       }
     })
     return colors
-  }, [todos])
+  }, [localTodos])
+  const checkTodo = async (id: number) => {
+    try {
+      await checkTodoAPI(id)
+      // router.reload() - 새로고침을 통한 페이지 새로 받기
+      // or router.push("/") - 클라이언트측 내비게이션을 이용하여 setServerSideProps 를 수행
+      // state 변화를 통해 불필요한 api 수행 방지
+      const newTodos = localTodos.map((todo) => todo.id === id ? { ...todo, checked: !todo.checked} : todo)
+      setLocalTodos(newTodos) 
+    } catch (e) {
+      console.log(e)
+    }
+  }
   return (
     <Container>
       <div className="todo-list-header">
         <p className="todo-list-last-todo">
-          남은 TODO <span>{todos.length}개</span>
+          남은 TODO <span>{localTodos.length}개</span>
         </p>
         <div className="todo-list-header-colors">
           {Object.keys(todoColorNums).map((color, index) => (
@@ -157,7 +166,7 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
         </div>
       </div>
       <ul className="todo-list">
-        {todos.map((todo) => (
+        {localTodos.map((todo) => (
           <li className="todo-item" key={todo.id}>
             <div className="todo-left-side">
               <div className={`todo-color-block bg-${todo.color}`} />
