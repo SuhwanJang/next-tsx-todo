@@ -4,6 +4,7 @@ import palette from '../../styles/palette'
 import { useMemo } from 'react'
 import { AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
+import { checkTodoAPI } from '../../lib/api/todo';
 
 const Container = styled.div`
   width: 100%;
@@ -119,6 +120,14 @@ type ObjectIndexType = {
   [key: string]: number | undefined
 }
 
+const checkTodo = async (id: number) => {
+  try {
+    await checkTodoAPI(id)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 const TodoList: React.FC<IProps> = ({ todos }) => {
   const todoColorNums = useMemo(() => {
     const colors: ObjectIndexType = {};
@@ -162,11 +171,11 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
               {todo.checked && (
                 <>
                   <BsTrash className="todo-trash-can" onClick={()=>{}}/>
-                  <AiOutlineCheck className="todo-check-mark" onClick={()=>{}}/>
+                  <AiOutlineCheck className="todo-check-mark" onClick={()=>{checkTodo(todo.id)}}/>
                 </>
               )}
               {!todo.checked && (
-                <button type="button" className="todo-button" onClick={() => {}}/>
+                <button type="button" className="todo-button" onClick={() => {checkTodo(todo.id)}}/>
               )}
             </div>
           </li>

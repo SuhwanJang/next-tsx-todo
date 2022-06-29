@@ -3,14 +3,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { TodoType } from '../types/type'
 import fs from 'fs'
 
-export default async function handler(
+export default async function listTodo(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
     try {
       const todos = await new Promise<TodoType[]>((resolve, reject) => {
-        fs.readFile("pages/api/data/todos.json", (err, data) => {
+        fs.readFile("lib/data/todos.json", (err, data) => {
           if (err) {
             return reject(err.message)
           }

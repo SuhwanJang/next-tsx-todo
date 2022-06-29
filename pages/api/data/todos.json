@@ -1,9 +1,0 @@
-[
-  { "id": 1, "text": "shopping", "color": "red", "checked": false},
-  { "id": 2, "text": "jogging", "color": "orange", "checked": true},
-  { "id": 3, "text": "study", "color": "navy", "checked": false},
-  { "id": 4, "text": "study1", "color": "yellow", "checked": true},
-  { "id": 5, "text": "study2", "color": "orange", "checked": false},
-  { "id": 6, "text": "study3", "color": "red", "checked": false},
-  { "id": 7, "text": "study4", "color": "navy", "checked": true}
-]
