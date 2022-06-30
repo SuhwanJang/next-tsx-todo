@@ -120,10 +120,6 @@ type ObjectIndexType = {
   [key: string]: number | undefined
 }
 
-
-
-
-
 const TodoList: React.FC<IProps> = ({ todos }) => {
   const [localTodos, setLocalTodos] = useState(todos);
   const todoColorNums = useMemo(() => {
