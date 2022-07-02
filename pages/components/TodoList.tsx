@@ -4,7 +4,7 @@ import palette from '../../styles/palette'
 import { useMemo, useState } from 'react'
 import { AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
-import { checkTodoAPI } from '../../lib/api/todo';
+import { checkTodoAPI, deleteTodoAPI } from '../../lib/api/todo';
 
 const Container = styled.div`
   width: 100%;
@@ -145,6 +145,15 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
       console.log(e)
     }
   }
+  const deleteTodo = async (id: number) => {
+    try {
+      await deleteTodoAPI(id)
+      const newTodo = localTodos.filter((todo) => todo.id !== id)
+      setLocalTodos(newTodo)
+    } catch (e) {
+      console.log(e)
+    }
+  }
   return (
     <Container>
       <div className="todo-list-header">
@@ -175,12 +184,12 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
             <div className="todo-right-side">
               {todo.checked && (
                 <>
-                  <BsTrash className="todo-trash-can" onClick={()=>{}}/>
-                  <AiOutlineCheck className="todo-check-mark" onClick={()=>{checkTodo(todo.id)}}/>
+                  <BsTrash className="todo-trash-can" onClick={() => deleteTodo(todo.id)}/>
+                  <AiOutlineCheck className="todo-check-mark" onClick={() => checkTodo(todo.id)}/>
                 </>
               )}
               {!todo.checked && (
-                <button type="button" className="todo-button" onClick={() => {checkTodo(todo.id)}}/>
+                <button type="button" className="todo-button" onClick={() => checkTodo(todo.id)}/>
               )}
             </div>
           </li>
