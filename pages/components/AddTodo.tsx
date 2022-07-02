@@ -1,6 +1,10 @@
 import styled from 'styled-components'
 import { BsBrush } from 'react-icons/bs'
 import palette from '../../styles/palette'
+import { useState } from 'react'
+import { TodoType } from '../types/type'
+import { addTodoAPI } from '../../lib/api/todo'
+import { useRouter } from 'next/router'
 
 const Container = styled.div`
   padding: 16px;
@@ -42,6 +46,9 @@ const Container = styled.div`
           margin: 0;
         }
       }
+      .add-todo-selected-color {
+        border: 2px solid black;
+      }
     }
 
     svg {
@@ -67,14 +74,41 @@ const Container = styled.div`
   .bg-yellow {
     background-color: ${palette.yellow};
   }
+
+  textarea {
+    width: 100%;
+    border-radius: 5px;
+    height: 300px;
+    border-color: ${palette.gray};
+    margin-top: 12px;
+    outline: none;
+    resize: none;
+    padding: 12px;
+    font-size: 16px;
+  }
 `
 
 const AddTodo: React.FC = () => {
+  const [text, setText] = useState("")
+  const [selectedColor, setSelectedColor] = useState<TodoType["color"]>()
+  const router = useRouter()
+  const addTodo = async () => {
+    try {
+      if (!text || !selectedColor) {
+        alert('색상과 할 일을 입력해주세요.')
+        return
+      }
+      await addTodoAPI({ text, color: selectedColor })
+      router.push('/')
+    } catch (e) {
+      console.log(e)
+    }
+  }
   return (
     <Container>
       <div className="add-todo-header">
         <h1 className="add-todo-header-title">Add Todo</h1>
-        <button type="button" className="add-todo-submit-button" onClick={() => {}}>
+        <button type="button" className="add-todo-submit-button" onClick={addTodo}>
           추가하기
         </button>
       </div>
@@ -82,12 +116,22 @@ const AddTodo: React.FC = () => {
         <div className="add-todo-color-list">
           {["red", "orange", "yellow", "green", "blue", "navy"].map(
             (color, index) => (
-              <button key={index} type="button" className={`bg-${color} add-todo-color-button`}/>
+              <button
+                key={index} type="button"
+                className={`bg-${color} add-todo-color-button ${
+                  color === selectedColor ? "add-todo-selected-color" : ""
+                }`}
+                onClick={() => setSelectedColor(color as TodoType["color"])}
+              />
             )
           )}
         </div>
         <BsBrush/>
       </div>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.currentTarget.value)}
+        placeholder="할 일을 입력해주세요."/>
     </Container>
   )
 }
