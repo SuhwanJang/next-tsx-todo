@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import { AnyAction, combineReducers } from "redux";
 import todoReducer from '../pages/todo/todoSlice'
+import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 
 const devMode = process.env.NODE_ENV === 'development';
 
@@ -24,6 +25,8 @@ const rootReducer = (state : any, action: AnyAction) => {
 }
 
 export type RootState = ReturnType<typeof reducer>
+
+export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector
 
 const makeStore = () => {
   return configureStore({

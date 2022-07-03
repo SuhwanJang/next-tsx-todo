@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { checkTodoAPI, deleteTodoAPI } from '../../lib/api/todo';
+import { useSelector } from '../../store';
 
 const Container = styled.div`
   width: 100%;
@@ -120,7 +121,8 @@ type ObjectIndexType = {
   [key: string]: number | undefined
 }
 
-const TodoList: React.FC<IProps> = ({ todos }) => {
+const TodoList: React.FC<IProps> = () => {
+  const todos = useSelector((state) => state.todo.todos)
   const [localTodos, setLocalTodos] = useState(todos);
   const todoColorNums = useMemo(() => {
     const colors: ObjectIndexType = {};

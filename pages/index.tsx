@@ -13,16 +13,14 @@ const Home: NextPage<IProps> = ({ todos }) => {
   return <TodoList todos={todos}/>
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
-  req, res, ...etc
-}) => {
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({}) => {
   try {
     const {data} = await getTodosAPI()
     store.dispatch(set(data))
-    return { props: { todos: data}} 
+    return { props: {}} 
   } catch (e) {
     console.log(e)
-    return { props: { todos: [] }}
+    return { props: {}}
   }
 })
 
