@@ -3,6 +3,9 @@ import type { AppProps } from 'next/app'
 import GlobalStyle from '../styles/GlobalStyle'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import { Provider } from 'react-redux'
+import store from '../store'
+import wrapper from '../store'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,4 +18,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export default MyApp
+export default wrapper.withRedux(MyApp)
