@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TodoType } from '../types/type'
 
-export interface ITodoState {
+interface ITodoState {
   todos: TodoType[]
 }
 
@@ -9,17 +9,17 @@ const initialState: ITodoState = {
   todos: []
 }
 
-export const todoSlice = createSlice({
+const todoSlice = createSlice({
   name: 'todo',
   initialState,
   reducers: {
-    preload: (state, action) => {
-      return { ...state, todos: action.payload }
+    set: (state, action: PayloadAction<TodoType[]>) => {
+      state.todos = action.payload
     }
   }
 })
 
 const { actions, reducer } = todoSlice
-export const { preload } = actions
+export const { set } = actions
 
 export default reducer

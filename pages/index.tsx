@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import TodoList from './components/TodoList'
 import { TodoType } from './types/type'
 import { getTodosAPI } from '../lib/api/todo'
-import { preload } from './todo/todoSlice'
+import { set } from './todo/todoSlice'
 import wrapper from '../store'
 
 interface IProps {
@@ -18,7 +18,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
 }) => {
   try {
     const {data} = await getTodosAPI()
-    store.dispatch(preload(data))
+    store.dispatch(set(data))
     return { props: { todos: data}} 
   } catch (e) {
     console.log(e)
