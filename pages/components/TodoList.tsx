@@ -6,6 +6,8 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { checkTodoAPI, deleteTodoAPI } from '../../lib/api/todo';
 import { useSelector } from '../../store';
+import { useDispatch } from 'react-redux';
+import { set } from '../todo/todoSlice';
 
 const Container = styled.div`
   width: 100%;
@@ -123,10 +125,10 @@ type ObjectIndexType = {
 
 const TodoList: React.FC<IProps> = () => {
   const todos = useSelector((state) => state.todo.todos)
-  const [localTodos, setLocalTodos] = useState(todos);
+  const dispatch = useDispatch()
   const todoColorNums = useMemo(() => {
     const colors: ObjectIndexType = {};
-    localTodos.forEach(todo => {
+    todos.forEach(todo => {
       if (!colors[todo.color]) {
         colors[`${todo.color}`] = 1;
       } else {
@@ -134,15 +136,15 @@ const TodoList: React.FC<IProps> = () => {
       }
     })
     return colors
-  }, [localTodos])
+  }, [todos])
   const checkTodo = async (id: number) => {
     try {
       await checkTodoAPI(id)
       // router.reload() - 새로고침을 통한 페이지 새로 받기
       // or router.push("/") - 클라이언트측 내비게이션을 이용하여 setServerSideProps 를 수행
       // state 변화를 통해 불필요한 api 수행 방지
-      const newTodos = localTodos.map((todo) => todo.id === id ? { ...todo, checked: !todo.checked} : todo)
-      setLocalTodos(newTodos) 
+      const newTodos = todos.map((todo) => todo.id === id ? { ...todo, checked: !todo.checked} : todo)
+      dispatch(set(newTodos))
     } catch (e) {
       console.log(e)
     }
@@ -150,8 +152,8 @@ const TodoList: React.FC<IProps> = () => {
   const deleteTodo = async (id: number) => {
     try {
       await deleteTodoAPI(id)
-      const newTodo = localTodos.filter((todo) => todo.id !== id)
-      setLocalTodos(newTodo)
+      const newTodos = todos.filter((todo) => todo.id !== id)
+      dispatch(set(newTodos))
     } catch (e) {
       console.log(e)
     }
@@ -160,7 +162,7 @@ const TodoList: React.FC<IProps> = () => {
     <Container>
       <div className="todo-list-header">
         <p className="todo-list-last-todo">
-          남은 TODO <span>{localTodos.length}개</span>
+          남은 TODO <span>{todos.length}개</span>
         </p>
         <div className="todo-list-header-colors">
           {Object.keys(todoColorNums).map((color, index) => (
@@ -173,7 +175,7 @@ const TodoList: React.FC<IProps> = () => {
         </div>
       </div>
       <ul className="todo-list">
-        {localTodos.map((todo) => (
+        {todos.map((todo) => (
           <li className="todo-item" key={todo.id}>
             <div className="todo-left-side">
               <div className={`todo-color-block bg-${todo.color}`} />
